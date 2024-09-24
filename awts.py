@@ -501,7 +501,7 @@ Plot_AWTs_Dates(clusters.bmus.values, np.asarray(sstTime), 6, show=True)
 
 import pickle
 
-dwtPickle = 'AWT1880to2023.pickle'
+dwtPickle = 'pastAWTs.pickle'
 outputAWT = {}
 outputAWT['clusters'] = clusters
 outputAWT['predictor'] = predictor
@@ -516,7 +516,6 @@ PCs = predictor['PCs'].values
 PC1 = PCs[:,0]
 PC2 = PCs[:,1]
 PC3 = PCs[:,2]
-
 
 
 
@@ -541,7 +540,6 @@ num_clusters = 6
 d1 = datetime.datetime(1979, 6, 1)
 dt = datetime.datetime(1979, 6, 1)
 end = datetime.datetime(2022, 6, 2)
-# step = datetime.timedelta(months=1)
 step = relativedelta(days=1)
 dailyTime = []
 while dt < end:
@@ -551,7 +549,6 @@ while dt < end:
 d1 = datetime.datetime(1880, 6, 1)
 dt = datetime.datetime(1880, 6, 1)
 end = datetime.datetime(2022, 6, 1)
-# step = datetime.timedelta(months=1)
 step = relativedelta(years=1)
 annualTime = []
 while dt < end:
@@ -570,20 +567,11 @@ anIndex = np.where(np.array(annualTime) >= datetime.datetime(1979,5,31))
 subsetAnnualTime = np.array(annualTime)[anIndex]
 #subsetAnnualTime = np.array(annualTime)
 subsetAWT = awt_bmus2[anIndex]
-# subsetPCs = pcAggregates[anIndex[0],:]#PCs[anIndex,:]
 subsetPCs = PCs[anIndex[0],:]
 
 for i in range(len(subsetAWT)):
     sSeason = np.where((DailyDatesMatrix[:, 0] == subsetAnnualTime[i].year) & (DailyDatesMatrix[:, 1] == subsetAnnualTime[i].month) & (DailyDatesMatrix[:, 2] == 1))
-    # if i == 168:
-    #     ssSeason = np.where((DailyDatesMatrix[:, 0] == subsetAnnualTime[i].year) & (DailyDatesMatrix[:, 1] == (subsetAnnualTime[i].month + 2)) & (DailyDatesMatrix[:, 2] == 31))
-    # else:
-    #     if subsetAnnualTime[i].month < 10:
-    #         ssSeason = np.where((DailyDatesMatrix[:, 0] == subsetAnnualTime[i].year) & (DailyDatesMatrix[:, 1] == (subsetAnnualTime[i].month + 3)) & (DailyDatesMatrix[:, 2] == 1))
-    #     else:
-    #         ssSeason = np.where((DailyDatesMatrix[:, 0] == (subsetAnnualTime[i].year + 1)) & (DailyDatesMatrix[:, 1] == 3) & (DailyDatesMatrix[:, 2] == 1))
     ssSeason = np.where((DailyDatesMatrix[:, 0] == subsetAnnualTime[i].year+1) & (DailyDatesMatrix[:, 1] == subsetAnnualTime[i].month) & (DailyDatesMatrix[:, 2] == 1))
-
 
     dailyAWT[sSeason[0][0]:ssSeason[0][0]+1] = subsetAWT[i]*dailyAWT[sSeason[0][0]:ssSeason[0][0]+1]
     dailyPC1[sSeason[0][0]:ssSeason[0][0]+1] = subsetPCs[i,0]*np.ones(len(dailyAWT[sSeason[0][0]:ssSeason[0][0]+1]),)
@@ -593,7 +581,7 @@ for i in range(len(subsetAWT)):
 
 import pickle
 
-awtPickle = 'ensoPCs2023.pickle'
+awtPickle = 'futureAwts.pickle'
 outputMWTs = {}
 outputMWTs['PC1'] = PC1
 outputMWTs['PC2'] = PC2

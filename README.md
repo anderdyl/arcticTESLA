@@ -77,11 +77,11 @@ The TESLA framework requires the below steps to be run sequentially as saved out
 3. After downloading NSIDC SICs and converting with nc2bin_siconc.py, run sic.py which will create 'ice.pickle'.
 4. Run 'export_local_tides_alaska.m' to create 'noaaAlaskaTides.mat', then run 'waterlevel.py' to create 'historicalNTR.pickle'.
 5. After downloading ERA5 waves and NOAA tides to create 'waves.pickle', run hydrographs.py
-5. After downloading ERSSTv5 SSTs, run awt.py
+5. After downloading ERSSTv5 SSTs, run awt.py to create 'pastAWTs.pickle' and 'futureAWTs.pickle'
 6. After downloading BOM MJO indices, run mjo.py
 7. Run copulas.py
 8. Run futureIceSimulations.py
-9. Run futureSLPsimulations.py
+9. Run futureSLPsimulations.py to create 'dwtFutureSimulation.pickle'
 
 
 Anderson, D. and N. Cohn (in review) Future coastal tundra loss due to compounding environmental changes in Alaska.

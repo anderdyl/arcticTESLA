@@ -13,13 +13,6 @@ _faspect = 1.618
 _fsize = 9.8
 _fdpi = 128
 
-# import requests
-# url = 'http://www.bom.gov.au/climate/mjo/graphics/rmm.74toRealtime.txt'
-# # Send a GET request to the URL and retrieve the image
-# response = requests.get(url)
-# # Open a file to save the image
-# with open('mjo.txt', 'wb') as f:
-#     f.write(response.content)
 
 year = []
 month = []
@@ -31,9 +24,6 @@ amplitude = []
 #Missing Value= 1.E36 or 999
 with open('mjo.txt', newline='') as csvfile:
     csvreader = csv.reader(csvfile, delimiter='\t')#, quotechar='|')
-    # line1 = txtfile.readline()
-    # line2 = txtfile.readline()
-    # data = txtfile.readlines()
     next(csvreader)
     next(csvreader)
     for row in csvreader:
@@ -342,80 +332,6 @@ def axplot_WT_Probs(ax, wt_probs,
         plt.setp(ax.spines.values(), linewidth=3)
 
     return pc
-
-
-
-#
-# fig10 = plt.figure()
-#
-# gs = gridspec.GridSpec(5, 5, wspace=0.10, hspace=0.15)
-#
-# for ic in range(25):
-#     ax = plt.subplot(gs[ic])
-#
-#     # select DWT bmus at current AWT indexes
-#     index_1 = np.where(mjoBmus == ic+1)[0][:]
-#     sel_2 = bmus[index_1]
-#     set_2 = np.arange(70)
-#     # get DWT cluster probabilities
-#     cps = ClusterProbabilities(sel_2, set_2)
-#     C_T = np.reshape(cps, (10, 7))
-#
-#     # # axis colors
-#     # if wt_colors:
-#     #     caxis = cs_wt[ic]
-#     # else:
-#     caxis = 'black'
-#
-#     # plot axes
-#     ax = plt.subplot(gs[ic])
-#     axplot_WT_Probs(
-#         ax, C_T,
-#         ttl='WT {0}'.format(ic + 1),
-#         cmap='Reds', caxis=caxis,
-#     )
-#     ax.set_aspect('equal')
-#
-#
-#
-# rmm = np.sqrt(mjoRmm1**2 + mjoRmm2**2)
-#
-# bigInd = np.where((rmm > 1))
-# mjoRmm1Big = mjoRmm1[bigInd]
-# mjoRmm2Big = mjoRmm2[bigInd]
-# mjoPhaseBig = mjoPhase[bigInd]
-# bmusBig = bmus[bigInd]
-#
-# plt.style.use('dark_background')
-# fig10 = plt.figure()
-#
-# gs = gridspec.GridSpec(1, 8, wspace=0.10, hspace=0.15)
-#
-# for ic in range(8):
-#     ax = plt.subplot(gs[ic])
-#
-#     # select DWT bmus at current AWT indexes
-#     index_1 = np.where(mjoPhaseBig == ic+1)[0][:]
-#     sel_2 = bmusBig[index_1]
-#     set_2 = np.arange(70)
-#     # get DWT cluster probabilities
-#     cps = ClusterProbabilities(sel_2, set_2)
-#     C_T = np.reshape(cps, (10, 7))
-#
-#     # # axis colors
-#     # if wt_colors:
-#     #     caxis = cs_wt[ic]
-#     # else:
-#     caxis = 'black'
-#
-#     # plot axes
-#     ax = plt.subplot(gs[ic])
-#     axplot_WT_Probs(
-#         ax, C_T,
-#         ttl='WT {0}'.format(ic + 1),
-#         cmap='Reds', caxis=caxis, vmin=0, vmax=0.07
-#     )
-#     ax.set_aspect('equal')
 
 
 mjoTime = np.asarray(mjoTime)[index]

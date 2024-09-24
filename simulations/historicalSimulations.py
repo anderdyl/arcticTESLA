@@ -3,12 +3,12 @@ from scipy.io.matlab.mio5_params import mat_struct
 import scipy.io as sio
 from datetime import datetime, timedelta, date
 import numpy as np
-from time_operations import xds2datetime as x2d
-from time_operations import xds_reindex_daily as xr_daily
-from time_operations import xds_common_dates_daily as xcd_daily
+from functions.time_operations import xds2datetime as x2d
+from functions.time_operations import xds_reindex_daily as xr_daily
+from functions.time_operations import xds_common_dates_daily as xcd_daily
 import pickle
 from dateutil.relativedelta import relativedelta
-from alr import ALR_WRP
+from functions.alr import ALR_WRP
 
 
 def ReadMatfile(p_mfile):
@@ -56,26 +56,16 @@ def dateDay2datetime(d_vec):
 
 
 import pickle
-# with open(r"dwts49ClustersArctic2y2022.pickle", "rb") as input_file:
-#    slpDWTs = pickle.load(input_file)
 
-# with open(r"dwts49ClustersArcticRGy2022.pickle", "rb") as input_file:
-with open(r"dwts49ClustersArctic2023.pickle", "rb") as input_file:
-# with open(r"dwts81ClustersArcticRGy2022.pickle", "rb") as input_file:
+
+with open(r"dwts.pickle", "rb") as input_file:
    slpDWTs = pickle.load(input_file)
 
 timeDWTs = slpDWTs['SLPtime']
-# monthDWTS = historicalDWTs['month']
-# yearsDWTS = historicalDWTs['month']
-# daysDWTS = historicalDWTs['month']
-
 bmus = slpDWTs['bmus_corrected']
 bmus_dates = dateDay2datetimeDate(timeDWTs)
 bmus_dates_months = np.array([d.month for d in bmus_dates])
 bmus_dates_days = np.array([d.day for d in bmus_dates])
-# bmus_dates = dateDay2datetime(dayTime)
-
-
 
 
 bmus = bmus[120:]+1
@@ -90,20 +80,12 @@ xds_KMA_fit = xr.Dataset(
 )
 
 
-
-
-# Loading historical Arctic Temperatures for 1979 to 2022
-with open(r"predictedArctic1978to2023.pickle", "rb") as input_file:
+with open(r"predictedArcticTemps.pickle", "rb") as input_file:
    arcticTemperatures = pickle.load(input_file)
 
 timeTemp = arcticTemperatures['futureDate']
 arcticTemp = np.array(arcticTemperatures['futureSims'][0])
-#
-# with open(r"averageArcticTemp.pickle", "rb") as input_file:
-#    historicalTemp = pickle.load(input_file)
-#
-# timeTemp = historicalTemp['dailyDate']
-# arcticTemp = historicalTemp['arcticTemp']
+
 
 xds_Temp_fit = xr.Dataset(
     {
@@ -116,29 +98,18 @@ xds_Temp_fit = xr.Dataset(
 xds_Temp_fit = xr_daily(xds_Temp_fit, datetime(1979, 6, 1),datetime(2023,5,31))
 
 
-
-
 with open(r"arcticMJO.pickle", "rb") as input_file:
    mjoData = pickle.load(input_file)
 
 
 timeMJO = mjoData['mjoTime']
-# monthDWTS = historicalDWTs['month']
-# yearsDWTS = historicalDWTs['month']
-# daysDWTS = historicalDWTs['month']
 
 bmusMJO = mjoData['bmus']
 bmus_datesMJO = timeMJO#dateDay2datetimeDate(timeMJO)
 bmus_dates_yearsMJO = np.array([d.year for d in bmus_datesMJO])
 bmus_dates_monthsMJO = np.array([d.month for d in bmus_datesMJO])
 bmus_dates_daysMJO = np.array([d.day for d in bmus_datesMJO])
-#
-# # MJO historical: rmm1, rmm2 (first date 1979-01-01 in order to avoid nans)
-# dataMJO = ReadMatfile('/media/dylananderson/Elements/NC_climate/mjo_australia_2021.mat')
 
-# yearMonth = np.vstack((bmus_dates_yearsMJO,bmus_dates_monthsMJO))
-# Dates = np.vstack((yearMonth,dataMJO['day']))
-# Dates.T
 xds_MJO_fit = xr.Dataset(
     {
         'rmm1': (('time',), mjoData['mjoRmm1']),
@@ -152,7 +123,7 @@ xds_MJO_fit = xr_daily(xds_MJO_fit, datetime(1979, 6, 1),datetime(2023,5,31))
 
 
 #### AWT FROM ENSO SSTs
-with open(r"AWT1880to2023.pickle", "rb") as input_file:
+with open(r"pastAWTs.pickle", "rb") as input_file:
    historicalAWTs = pickle.load(input_file)
 awtClusters = historicalAWTs['clusters']
 awtPredictor = historicalAWTs['predictor']
@@ -203,130 +174,6 @@ xds_PCs_fit = xr.Dataset(
 xds_PCs_fit = xr_daily(xds_PCs_fit, datetime(1979,6,1),datetime(2023,5,31))
 
 
-# with open(r"mwtPCs3.pickle", "rb") as input_file:
-#     historicalMWTs = pickle.load(input_file)
-# # dailyPC1 = historicalMWTs['dailyPC1']
-# # dailyPC2 = historicalMWTs['dailyPC2']
-# # dailyPC3 = historicalMWTs['dailyPC3']
-# # dailyPC4 = historicalMWTs['dailyPC4']
-# # dailyDates = historicalMWTs['dailyDates']
-# # awt_bmus = historicalMWTs['mwt_bmus']
-# # seasonalTime = historicalMWTs['seasonalTime']
-# # dailyMWT = historicalMWTs['dailyMWT']
-# # with open(r"mwtPCs3.pickle", "rb") as input_file:
-# #     historicalMWTs = pickle.load(input_file)
-# dailyPC1 = historicalMWTs['dailyPC1'][92:]
-# dailyPC2 = historicalMWTs['dailyPC2'][92:]
-# dailyPC3 = historicalMWTs['dailyPC3'][92:]
-# dailyPC4 = historicalMWTs['dailyPC4'][92:]
-# dailyDates = historicalMWTs['dailyDates'][92:]
-# awt_bmus = historicalMWTs['mwt_bmus'][1:]
-# seasonalTime = historicalMWTs['seasonalTime'][1:]
-# dailyMWT = historicalMWTs['dailyMWT'][92:]
-#
-# # AWT: PCs (Generated with copula simulation. Annual data, parse to daily)
-# xds_PCs_fit = xr.Dataset(
-#     {
-#         'PC1': (('time',), dailyPC1),
-#         'PC2': (('time',), dailyPC3),
-#         'PC3': (('time',), dailyPC3),
-#         'PC4': (('time',), dailyPC4),
-#     },
-#     coords = {'time': [datetime(r[0],r[1],r[2]) for r in dailyDates]}
-# )
-# # reindex annual data to daily data
-# xds_PCs_fit = xr_daily(xds_PCs_fit, datetime(1979,6,1),datetime(2021,5,31))
-
-
-#
-# ## Atlantic MultiDecadal
-# with open(r"awtPCs.pickle", "rb") as input_file:
-#     historicalAWTs = pickle.load(input_file)
-#
-# dailyPC1 = historicalAWTs['dailyPC1']
-# dailyPC2 = historicalAWTs['dailyPC2']
-# dailyPC3 = historicalAWTs['dailyPC3']
-# dailyDates = historicalAWTs['dailyDates']
-# awt_bmus = historicalAWTs['awt_bmus']
-# annualTime = historicalAWTs['annualTime']
-# dailyAWT = historicalAWTs['dailyAWT']
-#
-# # AWT: PCs (Generated with copula simulation. Annual data, parse to daily)
-# xds_PCs_fit = xr.Dataset(
-#     {
-#         'PC1': (('time',), dailyPC1),
-#         'PC2': (('time',), dailyPC2),
-#         'PC3': (('time',), dailyPC3),
-#     },
-#     coords = {'time': [datetime(r[0],r[1],r[2]) for r in dailyDates]}
-# )
-# # reindex annual data to daily data
-# xds_PCs_fit = xr_daily(xds_PCs_fit, datetime(1979,6,1),datetime(2021,5,31))
-#
-
-### NAO AS AN INDEX
-#
-# with open('/home/dylananderson/projects/duckGeomorph/NAO2021.txt', 'r') as fd:
-#     c = 0
-#     dataNAO = list()
-#     for line in fd:
-#         splitLine = line.split(',')
-#         secondSplit = splitLine[1].split('/')
-#         dataNAO.append(float(secondSplit[0]))
-# nao = np.asarray(dataNAO)
-#
-# dt = datetime.date(1950, 1, 1)
-# end = datetime.date(2021, 6, 1)
-# #step = datetime.timedelta(months=1)
-# step = relativedelta(months=1)
-# naoTime = []
-# while dt < end:
-#     naoTime.append(dt)#.strftime('%Y-%m-%d'))
-#     dt += step
-#
-# naoTIME = naoTime[353:]
-# data = nao[353:]
-# naoShort = data
-#
-# bins = np.linspace(np.min(data)-.05, np.max(data)+.05, 7)
-# digitized = np.digitize(data, bins)
-# bin_means = [data[digitized == i].mean() for i in range(1, len(bins))]
-#
-#
-# years = np.arange(1979,2022)
-# months = np.arange(1,13)
-# awtYears = np.arange(1880,2021)
-#
-#
-# digitShort = digitized#[353:]
-#
-#
-# naoTIME.append(datetime.date(2021,6,1))
-# naoDailyBmus = np.nan * np.ones(np.shape(bmus))
-# naoDaily = np.nan * np.ones(np.shape(bmus))
-# for hh in range(len(naoTIME)-1):
-#     #for mm in months:
-#         # indexDWT = np.where((np.asarray(bmus_dates) >= datetime.date(hh,6,1)) & (np.asarray(bmus_dates) <= datetime.date(hh+1,6,1)))
-#     indexDWT = np.where((np.asarray(bmus_dates) >= naoTIME[hh]) & (np.asarray(bmus_dates) <= naoTIME[hh+1]))
-#     #indexAWT = np.where((awtYears == hh))
-#     naoDaily[indexDWT] = naoShort[hh]*np.ones(len(indexDWT[0]))
-#     naoDailyBmus[indexDWT] = digitShort[hh]*np.ones(len(indexDWT[0]))
-#
-#
-
-
-
-
-
-# --------------------------------------
-# Mount covariates matrix
-
-# available data:
-# model fit: xds_KMA_fit, xds_MJO_fit, xds_PCs_fit
-# model sim: xds_MJO_sim, xds_PCs_sim
-
-# covariates: FIT
-# d_covars_fit = xcd_daily([xds_MJO_fit, xds_PCs_fit, xds_KMA_fit])
 d_covars_fit = xcd_daily([xds_MJO_fit, xds_PCs_fit, xds_Temp_fit, xds_KMA_fit])
 
 # PCs covar
@@ -343,24 +190,14 @@ cov_5 = np.array(cov_MJO.rmm2.values.reshape(-1,1), dtype=np.float64)
 cov_Temp = xds_Temp_fit.sel(time=slice(d_covars_fit[0],d_covars_fit[-1]))
 cov_6 = np.array(cov_Temp.temp.values.reshape(-1,1), dtype=np.float64)
 
-
 # join covars and norm.
 cov_T = np.hstack((cov_1, cov_2, cov_3, cov_4, cov_5, cov_6))
-
-
 cov_T_mean = np.mean(cov_T,axis=0)
 cov_T_std = np.std(np.array(cov_T, dtype=np.float64),axis=0)
-#cov_T_std = np.array(cov_T_std[0])
-# multCovT = np.array([0.31804979/0.31804979, 0.16031134/0.31804979, 0.12182678/0.31804979, 0.09111769/0.31804979, 1, 1])
-# multCovT = np.array([0.4019148/0.4019148, 0.11355852/0.4019148, 0.10510168/0.4019148, 1, 1, 1]) with amo
 multCovT = np.array([0.45632212/0.45632212, 0.10552158/0.45632212, 0.08360907/0.45632212, 1, 1, 1])
 
 covTNorm = np.divide(np.subtract(cov_T,cov_T_mean),cov_T_std)
 covTNormalize = np.multiply(covTNorm,multCovT)
-
-# covTSimNorm = np.divide(np.subtract(cov_T_sim,cov_T_mean),cov_T_std)
-# covTSimNormalize = np.multiply(covTSimNorm,multCovT)
-
 # KMA related covars starting at KMA period
 i0 = d_covars_fit.index(x2d(xds_KMA_fit.time[0]))
 cov_KMA = cov_T[i0:,:]
@@ -378,16 +215,6 @@ xds_cov_fit = xr.Dataset(
     }
 )
 
-
-
-
-
-# --------------------------------------
-# Autoregressive Logistic Regression
-
-# available data:
-# model fit: xds_KMA_fit, xds_cov_sim, num_clusters
-# model sim: xds_cov_sim, sim_num, sim_years
 
 # use bmus inside covariate time frame
 xds_bmus_fit = xds_KMA_fit.sel(
@@ -460,10 +287,9 @@ with h5py.File(p_mat_output, 'w') as hf:
         [d.day for d in dates_sim])).T
 
 
-samplesPickle = 'dwt49HistoricalSimulations100withTemp2023.pickle'
+samplesPickle = 'dwtHistoricalSimulation.pickle'
 outputSamples = {}
 outputSamples['evbmus_sim'] = evbmus_sim
-# outputSamples['evbmus_probcum'] = evbmus_probcum
 outputSamples['sim_years'] = sim_num
 outputSamples['dates_sim'] = dates_sim
 
