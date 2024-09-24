@@ -18,10 +18,15 @@ Data Download and Extraction
 
 Main Scripts
 - [awts](./awts.py) All codes relevant to synthesizing ERSSTv5 into annual sea surface temperature patterns and projecting future climate variability.
-- [sic](./sic.py) All codes relevant to synthesizing daily SIC fields and projecting future SIC and wave basin size variability.
+- [sic](./sic.py) All codes relevant to synthesizing daily SIC fields and wave basin sizes and projecting future variability.
 - [mjo](./mjo.py) All codes relevant to synthesizing outgoing longwave radiation and projecting variability.
 - [dwts](./dwts.py) All codes relevant to synthesizing SLPs into classified daily weather patterns.
 - [temps](./temps.py) All codes relevant to synthesizing ERA5 surface temperatures and projecting future Arctic air temperatures.
+
+Simulations
+- [historical SLP](./simulations/historicalSimulations.py) Application of the ALR model for DWTs to the historical time frame to validate model fits.
+- [future SLP](./simulations/futureSLPsimulations.py) Application of the ALR model for DWTs out to 2075.
+- [downscaling](./simulations/historicalHydrographsInterpolated.py) Statistically downscaling environmental variables by stretching hydrographs to fit simulating SLP time series.
 
 Functions
 - [alr](./functions/alr.py) AutoRegressive Logistic Model customized wrapper
