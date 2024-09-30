@@ -1,5 +1,7 @@
 # Arctic-TESLA
 
+[![DOI](https://zenodo.org/badge/862421512.svg)](https://zenodo.org/doi/10.5281/zenodo.13863196)
+
 ArcticTESLA is a collection of Python3 and Matlab functions for generating stochastic wave and water level scenarios at coastal locations in Northern Alaska on the Chukchi and Beaufort Seas.
 The package creates new time series of forcing conditions by generating new possible synoptic weather chronologies. 
 The workflow identifies historical synoptic weather patterns, and the meteorologic and oceanic conditions that occurred during those weather systems.
