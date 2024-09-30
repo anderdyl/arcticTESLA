@@ -1,31 +1,8 @@
-import os
-import numpy as np
 import datetime
-from netCDF4 import Dataset
-from scipy.stats.kde import gaussian_kde
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as mcolors
-from matplotlib import gridspec
 import pickle
 from scipy.io.matlab.mio5_params import mat_struct
-from datetime import datetime, date, timedelta
-import random
-import itertools
-import operator
-import scipy.io as sio
-import statsmodels.api as sm
-from statsmodels.distributions.empirical_distribution import ECDF
-from scipy.interpolate import interp1d
-from scipy.stats import norm, genpareto, t
-from scipy.special import ndtri  # norm inv
+from datetime import datetime, date
 import matplotlib.dates as mdates
-from scipy.stats import gumbel_l, genextreme
-from scipy.spatial import distance
-import scipy.io
-import h5py
-import mat73
-import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
 from datetime import timedelta

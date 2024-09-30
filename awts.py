@@ -3,9 +3,8 @@ import os
 import numpy as np
 import datetime
 from sklearn.decomposition import PCA
-import cftime
 from dateutil.relativedelta import relativedelta
-from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.dates as mdates

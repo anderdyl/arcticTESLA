@@ -6,7 +6,6 @@ import numpy as np
 from functions.time_operations import xds2datetime as x2d
 from functions.time_operations import xds_reindex_daily as xr_daily
 from functions.time_operations import xds_common_dates_daily as xcd_daily
-import pickle
 from dateutil.relativedelta import relativedelta
 from functions.alr import ALR_WRP
 

@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import csv
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 import matplotlib.colors as mcolors
 import matplotlib.patches as patches
 

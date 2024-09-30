@@ -1,30 +1,8 @@
-import os
 import numpy as np
-import datetime
-from netCDF4 import Dataset
-from scipy.stats.kde import gaussian_kde
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as mcolors
-from matplotlib import gridspec
-import pickle
-from scipy.io.matlab.mio5_params import mat_struct
 from datetime import datetime, date, timedelta
-import random
-import itertools
-import operator
-import scipy.io as sio
-import statsmodels.api as sm
-from statsmodels.distributions.empirical_distribution import ECDF
-from scipy.interpolate import interp1d
-from scipy.stats import norm, genpareto, t
-from scipy.special import ndtri  # norm inv
-import matplotlib.dates as mdates
-from scipy.stats import  genextreme, gumbel_l, spearmanr, norm, weibull_min
 from scipy.spatial import distance
 import pickle
 import calendar
-import xarray as xr
 import pandas
 
 
@@ -35,16 +13,7 @@ with open(r"dwt49FutureSimulations500.pickle", "rb") as input_file:
     simsInput = pickle.load(input_file)
 
 evbmus_sim = simsInput['evbmus_sim']
-# sim_num = simsInput['sim_num']
 dates_sim = simsInput['dates_sim']
-
-
-# with open(r"simulations100Chopped49.pickle", "rb") as input_file:
-#    simsChoppedInput = pickle.load(input_file)
-# simBmuLengthChopped = simsChoppedInput['simBmuLengthChopped']
-# simBmuGroupsChopped = simsChoppedInput['simBmuGroupsChopped']
-# simBmuChopped = simsChoppedInput['simBmuChopped']
-# simIceGroupsChopped = simsChoppedInput['simIceGroupsChopped']
 
 def moving_average(a, n=3):
     ret = np.cumsum(a, dtype=float)
@@ -64,62 +33,15 @@ def max_rolling(a, window, axis=1):
     return np.nanmax(rolling, axis=axis)
 
 
-directoryDict = ['/volumes/macDrive/arcticSims/shishmaref/',
-                 '/volumes/macDrive/arcticSims/wainwright/',
-                 '/volumes/macDrive/arcticSims/pointHope/',
-                 '/volumes/macDrive/arcticSims/pointLay/',
-                 '/volumes/macDrive/arcticSims/kivalina/',
-                 '/volumes/macDrive/arcticSims/wales/',
-                 '/volumes/macDrive/arcticSims/wevok/',
-                 '/volumes/macDrive/arcticSims/utqiagvik/',
-                 ]
-# directoryDict = ['/Users/dylananderson/Documents/data/shishmaref/',
-#                 '/Users/dylananderson/Documents/data/wainwright/',
-#                 '/Users/dylananderson/Documents/data/pointHope/',
-#                 '/Users/dylananderson/Documents/data/pointLay/',
-#                 '/Users/dylananderson/Documents/data/kivalina/',
-#                 '/Users/dylananderson/Documents/data/wales/',
-#                 '/Users/dylananderson/Documents/data/wevok/',]
+directoryDict = ['/volumes/macDrive/arcticSims/pointHope/']
 
-gevCopulaDict = ['gevCopulaSims100000shishmaref.pickle',
-                 'gevCopulaSims100000wainwright.pickle',
-                 'gevCopulaSims100000pointHope.pickle',
-                 'gevCopulaSims100000pointLay.pickle',
-                 'gevCopulaSims100000kivalina.pickle',
-                 'gevCopulaSims100000wales.pickle',
-                 'gevCopulaSims100000wevok.pickle',
-                 'gevCopulaSims100000utqiagvik.pickle',
-                 ]
+gevCopulaDict = ['gevCopulaSims100000pointHope.pickle']
 
-normHyDict = ['normalizedWaveHydrographsShishmaref.pickle',
-                 'normalizedWaveHydrographsWainwright.pickle',
-                 'normalizedWaveHydrographsPointHope.pickle',
-                 'normalizedWaveHydrographsPointLay.pickle',
-                 'normalizedWaveHydrographsKivalina.pickle',
-                 'normalizedWaveHydrographsWales.pickle',
-                 'normalizedWaveHydrographsWevok.pickle',
-                 'normalizedWaveHydrographsUtqiagvik.pickle',
-              ]
+normHyDict = ['normalizedWaveHydrographsPointHope.pickle']
 
-hyCopDict = ['hydrographCopulaDataShishmaref.pickle',
-              'hydrographCopulaDataWainwright.pickle',
-              'hydrographCopulaDataPointHope.pickle',
-              'hydrographCopulaDataPointLay.pickle',
-              'hydrographCopulaDataKivalina.pickle',
-              'hydrographCopulaDataWales.pickle',
-              'hydrographCopulaDataWevok.pickle',
-              'hydrographCopulaDataUtqiagvik.pickle',
-            ]
+hyCopDict = ['hydrographCopulaDataPointHope.pickle']
 
-iceSimDict = ['ice18FutureSimulations1000Shishmaref.pickle',
-                'ice18FutureSimulations1000Wainwright.pickle',
-                'ice18FutureSimulations1000PointHope.pickle',
-                'ice18FutureSimulations1000PointLay.pickle',
-                'ice18FutureSimulations1000Kivalina.pickle',
-                'ice18FutureSimulations1000Wales.pickle',
-                'ice18FutureSimulations1000Wevok.pickle',
-                'ice18FutureSimulations1000Utqiagvik.pickle',
-              ]
+iceSimDict = ['ice.pickle']
 
 
 

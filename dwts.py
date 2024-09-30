@@ -8,7 +8,6 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import random
 from mpl_toolkits.basemap import Basemap
-
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn import linear_model

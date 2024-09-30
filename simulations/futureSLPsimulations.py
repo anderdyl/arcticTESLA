@@ -67,7 +67,6 @@ bmus = slpDWTs['bmus_corrected']
 bmus_dates = dateDay2datetimeDate(timeDWTs)
 bmus_dates_months = np.array([d.month for d in bmus_dates])
 bmus_dates_days = np.array([d.day for d in bmus_dates])
-# bmus_dates = dateDay2datetime(dayTime)
 
 bmus = bmus[120:]+1
 timeDWTs = timeDWTs[120:]
@@ -198,14 +197,12 @@ swtBMUS = simSWTs['evbmus_sim']
 swtPC1 = simSWTs['pc1Sims']
 swtPC2 = simSWTs['pc2Sims']
 swtPC3 = simSWTs['pc3Sims']
-#swtPC4 = simSWTs['pc4Sims']
 swtDatesSim = simSWTs['dates_sim']
 
 
 d1 = datetime(2022, 6, 1)
 dt = datetime(2022, 6, 1)
 end = datetime(2122, 6, 2)
-# step = datetime.timedelta(months=1)
 step = relativedelta(days=1)
 simDailyTime = []
 while dt < end:
@@ -237,16 +234,10 @@ cov_T = np.hstack((cov_1, cov_2, cov_3, cov_4, cov_5, cov_6))
 
 cov_T_mean = np.mean(cov_T,axis=0)
 cov_T_std = np.std(np.array(cov_T, dtype=np.float64),axis=0)
-#cov_T_std = np.array(cov_T_std[0])
-# multCovT = np.array([0.31804979/0.31804979, 0.16031134/0.31804979, 0.12182678/0.31804979, 0.09111769/0.31804979, 1, 1])
-# multCovT = np.array([0.4019148/0.4019148, 0.11355852/0.4019148, 0.10510168/0.4019148, 1, 1, 1]) with amo
 multCovT = np.array([0.45632212/0.45632212, 0.10552158/0.45632212, 0.08360907/0.45632212, 1, 1, 1])
 
 covTNorm = np.divide(np.subtract(cov_T,cov_T_mean),cov_T_std)
 covTNormalize = np.multiply(covTNorm,multCovT)
-
-# covTSimNorm = np.divide(np.subtract(cov_T_sim,cov_T_mean),cov_T_std)
-# covTSimNormalize = np.multiply(covTSimNorm,multCovT)
 
 # KMA related covars starting at KMA period
 i0 = d_covars_fit.index(x2d(xds_KMA_fit.time[0]))
@@ -276,7 +267,7 @@ xds_bmus_fit = xds_KMA_fit.sel(
 # Autoregressive logistic wrapper
 num_clusters = 49
 fit_and_save = True # False for loading
-p_test_ALR = '/Users/dylananderson/Documetns/data/pointLay/testALR/'
+p_test_ALR = '/testALR/'
 
 # ALR terms
 d_terms_settings = {
@@ -318,26 +309,24 @@ for simIndex in range(diffSims):
     # reindex to daily data after 1979-01-01 (avoid NaN)
     xds_Temp_sim = xr_daily(xds_Temp_sim, datetime(2023, 6, 1), datetime(2075, 5, 31))
 
-    rmm1Sim = mjoRMM1Sim[simIndex]#[0:len(rmm1Historical)]
-    rmm2Sim = mjoRMM2Sim[simIndex]#[0:len(rmm1Historical)]
+    rmm1Sim = mjoRMM1Sim[simIndex]
+    rmm2Sim = mjoRMM2Sim[simIndex]
 
     xds_MJOs_sim = xr.Dataset(
         {
             'rmm1': (('time',), rmm1Sim),
             'rmm2': (('time',), rmm2Sim),
         },
-        # coords = {'time': mjoDates}#[datetime(r[0],r[1],r[2]) for r in mjoDatesSim]}
         coords = {'time': mjoDatesSim}
     )
 
     xds_MJOs_sim = xr_daily(xds_MJOs_sim,datetime(2023,6,1),datetime(2075,5,31))
 
-    swtBMUsim = swtBMUS[simIndex][0:100]#[0:len(awt_bmus)]
-    swtPC1sim = swtPC1[simIndex][0:100]#[0:len(awt_bmus)]
-    swtPC2sim = swtPC2[simIndex][0:100]#[0:len(awt_bmus)]
-    swtPC3sim = swtPC3[simIndex][0:100]#[0:len(awt_bmus)]
+    swtBMUsim = swtBMUS[simIndex][0:100]
+    swtPC1sim = swtPC1[simIndex][0:100]
+    swtPC2sim = swtPC2[simIndex][0:100]
+    swtPC3sim = swtPC3[simIndex][0:100]
 
-    # trainingDates = mjoDatesSim#[datetime(r[0],r[1],r[2]) for r in dailyDates]
     trainingDates = [datetime(r[0],r[1],r[2]) for r in simDailyDatesMatrix]
     dailyAWTsim = np.ones((len(trainingDates),))
     dailyPC1sim = np.ones((len(trainingDates),))
@@ -420,24 +409,14 @@ for simIndex in range(diffSims):
     d2 = datetime(d1.year+sim_years, d1.month, d1.day)
     dates_sim = [d1 + timedelta(days=i) for i in range((d2-d1).days+1)]
     dates_sim = dates_sim[0:-2]
-    # print some info
-
-    # print('ALR model sim   : {0} --- {1}'.format(
-    #     dates_sim[0], dates_sim[-1]))
     print('ALR model sim   : {0} --- {1}'.format(
         d_covars_fit[0], d_covars_fit[-1]))
-
     # launch simulation
     xds_ALR = ALRW.Simulate(
         sim_num, dates_sim, xds_cov_sim)
-
-    # dates_sim = dates_sim[0:-2]
-
-
     # Save results for matlab plot
     evbmus_sim[:,c:c+sim_num] = xds_ALR.evbmus_sims.values
     c = c + sim_num
-    # evbmus_probcum = xds_ALR.evbmus_probcum.values
 
 
 
@@ -500,20 +479,15 @@ for i, dpy in enumerate(list_pyear):
       [(bmus_dates_months == dpy.month) & (bmus_dates_days == dpy.day)]
    )
    b = evbmus_sim[s,:]
-   # b = bmus[s]
    b = b.flatten()
 
    for j in range(num_clusters):
       _, bb = np.where([(j + 1 == b)])  # j+1 starts at 1 bmus value!
-      # _, bb = np.where([(j == b)])  # j+1 starts at 1 bmus value!
 
       m_plot[j, i] = float(len(bb) / float(num_sim)) / len(s)
 
 import matplotlib.cm as cm
 dwtcolors = cm.rainbow(np.linspace(0, 1, num_clusters))
-# tccolors = np.flipud(cm.autumn(np.linspace(0,1,21)))
-# dwtcolors = np.vstack((etcolors,tccolors[1:,:]))
-
 
 
 
@@ -539,7 +513,6 @@ ax.set_ylabel('Probability')
 
 
 
-
 # generate perpetual year list
 list_pyear = GenOneYearDaily(month_ini=6)
 m_plot = np.zeros((num_clusters, len(list_pyear))) * np.nan
@@ -547,22 +520,15 @@ num_sim=1
 # sort data
 for i, dpy in enumerate(list_pyear):
    _, s = np.where(
-      [(bmus_dates_months == dpy.month) & (bmus_dates_days == dpy.day)]
-   )
+      [(bmus_dates_months == dpy.month) & (bmus_dates_days == dpy.day)])
    b = evbmus_sim[s,2]
-   # b = bmus[s]
    b = b.flatten()
 
    for j in range(num_clusters):
       _, bb = np.where([(j + 1 == b)])  # j+1 starts at 1 bmus value!
-      # _, bb = np.where([(j == b)])  # j+1 starts at 1 bmus value!
 
       m_plot[j, i] = float(len(bb) / float(num_sim)) / len(s)
 
-import matplotlib.cm as cm
-# etcolors = cm.viridis(np.linspace(0, 1, 70-20))
-# tccolors = np.flipud(cm.autumn(np.linspace(0,1,21)))
-# dwtcolors = np.vstack((etcolors,tccolors[1:,:]))
 
 fig = plt.figure(figsize=(10,4))
 ax = plt.subplot2grid((1,1),(0,0))
@@ -581,7 +547,6 @@ monthsFmt = mdates.DateFormatter('%b')
 ax.set_xlim(list_pyear[0], list_pyear[-1])
 ax.xaxis.set_major_locator(months)
 ax.xaxis.set_major_formatter(monthsFmt)
-# ax.set_ylim(0, 100)
 ax.set_ylim(0, 1)
 ax.set_ylabel('Probability')
 
@@ -598,13 +563,11 @@ num_sim=1
 # sort data
 for i, dpy in enumerate(list_pyear):
    _, s = np.where([(bmus_dates_months == dpy.month) & (bmus_dates_days == dpy.day)])
-   # b = evbmus_sim[s,:]
    b = bmus[s]
    b = b.flatten()
 
    for j in range(num_clusters):
       _, bb = np.where([(j + 1 == b)])  # j+1 starts at 1 bmus value!
-      # _, bb = np.where([(j == b)])  # j+1 starts at 1 bmus value!
 
       m_plot[j, i] = float(len(bb) / float(num_sim)) / len(s)
 
@@ -636,16 +599,12 @@ ax.set_ylabel('Probability')
 
 
 
-
-
 # Lets make a plot comparing probabilities in sim vs. historical
 probH = np.nan*np.ones((num_clusters,))
 probS = np.nan * np.ones((500,num_clusters))
-
 for h in np.unique(bmus):
     findH = np.where((bmus == h))[0][:]
     probH[int(h-1)] = len(findH)/len(bmus)
-
     for s in range(500):
         findS = np.where((evbmus_sim[:,s] == h))[0][:]
         probS[s,int(h-1)] = len(findS)/len(evbmus_sim[:,s])
@@ -653,8 +612,6 @@ for h in np.unique(bmus):
 
 
 plt.figure()
-# plt.plot(probH,np.mean(probS,axis=0),'.')
-# plt.plot([0,0.03],[0,0.03],'.--')
 ax = plt.subplot2grid((1,1),(0,0),rowspan=1,colspan=1)
 for i in range(num_clusters):
     temp = probS[:,i]
@@ -667,8 +624,6 @@ for i in range(num_clusters):
     plt.setp(box1['caps'],color=dwtcolors[i])
     plt.setp(box1['medians'],color=dwtcolors[i],linewidth=0)
 
-    #box1['boxes'].set(facecolor=dwtcolors[i])
-    #plt.set(box1['fliers'],markeredgecolor=dwtcolors[i])
 ax.plot([0,0.06],[0,0.06],'k.--', zorder=10)
 plt.xlim([0,0.06])
 plt.ylim([0,0.06])
