@@ -4,12 +4,12 @@ ArcticTESLA is a collection of Python3 and Matlab functions for generating stoch
 The package creates new time series of forcing conditions by generating new possible synoptic weather chronologies. 
 The workflow identifies historical synoptic weather patterns, and the meteorologic and oceanic conditions that occurred during those weather systems.
 Markov chains for each pattern, as well as their likelihood of occurrence conditional dependent on large scale climate indices, are then used in monte carlo simulations.
-All codes are used in Anderson and Cohn (in review), with some functions adopted from https://github.com/teslakit/teslakit or from Anderson et al. (2019) and the references within.
-
+All codes are used in Anderson and Cohn (in review), with some adopted from Anderson et al. (2019) and the references within. 
+Many of the codes within this repo are functions from https://github.com/teslakit/teslakit with the goal of this repo eventually being merged into teslaKit.
 
 ## Main contents
 
-arcticTESLA modules:
+### Modules:
 
 Data Download and Extraction
 - [era5](./dataDownloads/era5metOceanDownloads.py) Automated downloads from Copernicus (follow steps outlined below in 'Downloading Data' to ensure account access)
