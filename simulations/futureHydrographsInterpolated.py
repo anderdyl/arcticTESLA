@@ -68,13 +68,10 @@ for site in range(len(gevCopulaDict)):
 
     with open(iceSimDict[site], "rb") as input_file:
        iceSimulations = pickle.load(input_file)
-    # iceSims = iceSimulations['evbmus_simHist'][212:,:]
-    # iceDates = iceSimulations['dates_simHist'][212:]
     iceSims = iceSimulations['evbmus_sim'][16070:,:]
     iceDates = iceSimulations['dates_sim'][16070:]
     # iceConcHist = iceSimulations['iceConcHist']
     iceConcSims = iceSimulations['iceConcSims']
-    # iceOnOff = iceSimulations['iceOnOff']
     iceOnOffSims = iceSimulations['iceOnOffSims']
 
 
@@ -146,7 +143,6 @@ for site in range(len(gevCopulaDict)):
                 if np.remainder(i,2000) == 0:
                     print('done with {} hydrographs'.format(i))
                 tempBmu = int(evbmus_sim[i,int(np.floor(np.divide(simCounter,2)))]-1)
-                # randStorm = random.randint(0, 9999)
                 amount = 100
                 randStorm = [random.choice(range(70000)) for _ in range(amount)]
                 iceAreaBelowTemp = iceOnOffSims[simNum][i+16070]
@@ -159,14 +155,8 @@ for site in range(len(gevCopulaDict)):
 
                 if stormDetails[0] > 6:
                     print('oh boy, we''ve picked a {}m storm wave in BMU #{}'.format(stormDetails[0],tempBmu))
-                durSim = 1#simBmuLengthChopped[simNum][i]
+                durSim = 1
 
-                # simDmNorm = (stormDetails[4] - np.asarray(bmuDataMin)[tempBmu,0]) / (np.asarray(bmuDataMax)[tempBmu,0]-np.asarray(bmuDataMin)[tempBmu,0])
-                # simSsNorm = (stormDetails[5] - np.asarray(bmuDataMin)[tempBmu,1]) / (np.asarray(bmuDataMax)[tempBmu,1]-np.asarray(bmuDataMin)[tempBmu,1])
-                # test, closeIndex = closest_node([simDmNorm,simSsNorm],np.asarray(bmuDataNormalized)[tempBmu])
-
-                # simHsNorm = (stormDetails[0] - np.asarray(bmuDataMin)[tempBmu,0]) / (np.asarray(bmuDataMax)[tempBmu,0]-np.asarray(bmuDataMin)[tempBmu,0])
-                # simTpNorm = (stormDetails[1] - np.asarray(bmuDataMin)[tempBmu,1]) / (np.asarray(bmuDataMax)[tempBmu,1]-np.asarray(bmuDataMin)[tempBmu,1])
                 simHsNorm = (stormDetails[4] - np.asarray(bmuDataMin)[tempBmu, 0]) / (
                             np.asarray(bmuDataMax)[tempBmu, 0] - np.asarray(bmuDataMin)[tempBmu, 0])
                 simTpNorm = (stormDetails[12] - np.asarray(bmuDataMin)[tempBmu, 1]) / (
@@ -174,7 +164,7 @@ for site in range(len(gevCopulaDict)):
 
                 test, closeIndex = closest_node([simHsNorm,simTpNorm],np.asarray(bmuDataNormalized)[tempBmu])
 
-                actualIndex = closeIndex#int(np.asarray(copulaDataNoNaNs[tempBmu])[closeIndex,6])
+                actualIndex = closeIndex
 
                 tempHs = ((normalizedHydros[tempBmu][actualIndex]['hsNorm']) * (stormDetails[0]-stormDetails[1]) + stormDetails[1])#.filled()
                 tempTp = ((normalizedHydros[tempBmu][actualIndex]['tpNorm']) * (stormDetails[2]-stormDetails[3]) + stormDetails[3])#.filled()
@@ -184,25 +174,13 @@ for site in range(len(gevCopulaDict)):
                 tempV10 = ((normalizedHydros[tempBmu][actualIndex]['vNorm']) * (stormDetails[7]-stormDetails[8]) + stormDetails[8])#.filled()
                 tempSSR = stormDetails[9]
                 tempT2M = stormDetails[10]
-                # tempT2M = ((normalizedHydros[tempBmu][actualIndex]['t2mNorm']) * (stormDetails[14]-stormDetails[15]) + stormDetails[15])#.filled()
 
                 tempNTR = (normalizedHydros[tempBmu][actualIndex]['ntrNorm']) + stormDetails[12]
 
-                # tempSs = ((normalizedHydros[tempBmu][actualIndex]['ssNorm']) + stormDetails[5])
                 if len(normalizedHydros[tempBmu][actualIndex]['hsNorm']) < len(normalizedHydros[tempBmu][actualIndex]['timeNorm']):
                     print('Time is shorter than Hs in bmu {}, index {}'.format(tempBmu,actualIndex))
                 if stormDetails[1] < 0:
                     print('woah, we''re less than 0 over here')
-                    asdfg
-                # if len(tempSs) < len(normalizedHydros[tempBmu][actualIndex]['timeNorm']):
-                #     print('Ss is shorter than Time in bmu {}, index {}'.format(tempBmu,actualIndex))
-                #     tempLength = len(normalizedHydros[tempBmu][actualIndex]['timeNorm'])
-                #     tempSs = np.zeros((len(normalizedHydros[tempBmu][actualIndex]['timeNorm']),))
-                #     tempSs[0:len((normalizedHydros[tempBmu][actualIndex]['ssNorm']) + stormDetails[5])] = ((normalizedHydros[tempBmu][actualIndex]['ssNorm']) + stormDetails[5])
-                # if len(tempSs) > len(normalizedHydros[tempBmu][actualIndex]['timeNorm']):
-                #     print('Now Ss is longer than Time in bmu {}, index {}'.format(tempBmu,actualIndex))
-                #     print('{} vs. {}'.format(len(tempSs),len(normalizedHydros[tempBmu][actualIndex]['timeNorm'])))
-                #     tempSs = tempSs[0:-1]
 
                 if iceConcSims[i+16070,simNum] < 3:
                     simHs.append(tempHs)
@@ -224,31 +202,15 @@ for site in range(len(gevCopulaDict)):
                     simT2M.append(tempT2M)
                     simNTR.append(tempNTR)
 
-                    # simSs.append(tempSs)
-                #simTime.append(normalizedHydros[tempBmu][actualIndex]['timeNorm']*durSim)
-                #dt = np.diff(normalizedHydros[tempBmu][actualIndex]['timeNorm']*durSim)
                 simTime.append(np.hstack((np.diff(normalizedHydros[tempBmu][actualIndex]['timeNorm']*durSim), np.diff(normalizedHydros[tempBmu][actualIndex]['timeNorm']*durSim)[-1])))
 
 
             cumulativeHours = np.cumsum(np.hstack(simTime))
             newDailyTime = [datetime(2023, 6, 1) + timedelta(days=ii) for ii in cumulativeHours]
-            # newDailyTime = [datetime(2022, 6, 1) + timedelta(days=ii) for ii in cumulativeHours]
             simDeltaT = [(tt - newDailyTime[0]).total_seconds() / (3600 * 24) for tt in newDailyTime]
             simDailyDeltaT = [(tt - dailyTime[0]).total_seconds() / (3600 * 24) for tt in dailyTime[0:-1]]
 
-            # simulationsTime.append(newDailyTime)
-            # rng = newDailyTime
-            #
-
-            # simData = np.array(np.vstack((np.hstack(simHs).T,np.hstack(simTp).T,np.hstack(simDm).T)))
-            # simData = np.array(np.vstack((np.hstack(simHs).T,np.hstack(simTp).T,np.hstack(simDm).T,np.hstack(simU10).T,np.hstack(simV10).T,np.hstack(simT2M).T)))
             simData = np.array(np.vstack((np.hstack(simHs).T,np.hstack(simTp).T,np.hstack(simDm).T,np.hstack(simU10).T,np.hstack(simV10).T)))
-
-            # simData = np.array(np.vstack((np.hstack(simHs).T,np.hstack(simTp).T,np.hstack(simDm).T,np.hstack(simSs).T)))
-            # simData = np.array((np.ma.asarray(np.hstack(simHs)),np.ma.asarray(np.hstack(simTp)),np.ma.asarray(np.hstack(simDm)),np.ma.asarray(np.hstack(simSs))))
-            # simData = np.array([np.hstack(simHs).filled(),np.hstack(simTp).filled(),np.hstack(simDm).filled(),np.hstack(simSs)])
-
-            # ogdf = pandas.DataFrame(data=simData.T,index=newDailyTime,columns=["hs","tp","dm","u10","v10"])
 
             print('interpolating')
             simDeltaTWaves = np.copy(simDeltaT)
@@ -268,11 +230,9 @@ for site in range(len(gevCopulaDict)):
             interpU10 = np.interp(deltaT,simDeltaT,np.hstack(simU10))
             interpV10 = np.interp(deltaT,simDeltaT,np.hstack(simV10))
             interpSSR = np.interp(deltaT,simDailyDeltaT,np.hstack(simSSR))
-            # interpT2M = np.interp(deltaT, simDeltaT, np.hstack(simT2M))
-            # interpT2M = np.interp(deltaT,simDailyDeltaT,np.hstack(simT2M))
             interpNTR = np.interp(deltaT, simDeltaT, np.hstack(simNTR))
 
-
+            # CONNECTING DAILY HYDROGRAPHS FOR SMOOTH MIDNIGHT TRANSITIONS WITH A ROLLING MEAN IN THE 6 HOUR WINDOW TO EITHER SIDE
             beginOfDayIndex = np.where(hourlyHours==0)
             beginOfDayIndexPlus1 = np.where(hourlyHours==1)
             beginOfDayIndexPlus2 = np.where(hourlyHours==2)
@@ -319,7 +279,6 @@ for site in range(len(gevCopulaDict)):
             Hs[lateYear] = interpHsMax[lateYear]
 
 
-
             endOfDayTpMinus3 = interpTp[endOfDayIndexMinus3]
             endOfDayTpMinus2 = interpTp[endOfDayIndexMinus2]
             endOfDayTpMinus1 = interpTp[endOfDayIndexMinus1]
@@ -339,9 +298,6 @@ for site in range(len(gevCopulaDict)):
             interpTp[beginOfDayIndex[0][1:]] = newBeginOfDayTp
             interpTp[beginOfDayIndexPlus1[0][1:]] = newBeginOfDayTpPlus1
 
-            # # plt.plot(hourlyTime,interpHs)
-            # plt.figure()
-            # plt.plot(hourlyTime,interpNTR)
 
             endOfDayNTRMinus3 = interpNTR[endOfDayIndexMinus3]
             endOfDayNTRMinus2 = interpNTR[endOfDayIndexMinus2]
@@ -362,8 +318,6 @@ for site in range(len(gevCopulaDict)):
             interpNTR[beginOfDayIndex[0][1:]] = newBeginOfDayNTR
             interpNTR[beginOfDayIndexPlus1[0][1:]] = newBeginOfDayNTRPlus1
 
-            # plt.plot(hourlyTime,interpNTR)
-
             dailyMonths = month = np.array([tt.month for tt in dailyTime])
 
             earlyDYear = np.where(dailyMonths[0:-1] < 5)
@@ -375,9 +329,6 @@ for site in range(len(gevCopulaDict)):
             T2Mminrolling = np.hstack([np.nanmean(T2M),np.nanmean(T2M),min_rolling(T2M,5),np.nanmean(T2M),np.nanmean(T2M)])
             T2Mrolling = np.hstack([np.nanmean(T2M),np.nanmean(T2M),moving_average(T2M,5),np.nanmean(T2M),np.nanmean(T2M)])
 
-            # interpMinT2M = np.interp(deltaT,simDailyDeltaT,T2Mminrolling)
-            # interpMaxT2M = np.interp(deltaT,simDailyDeltaT,T2Mmaxrolling)
-
             newT2M = T2Mrolling
             newT2M[earlyDYear[0]] = T2Mminrolling[earlyDYear[0]]
             newT2M[lateDYear[0]] = T2Mminrolling[lateDYear[0]]
@@ -385,100 +336,22 @@ for site in range(len(gevCopulaDict)):
 
             interpT2M = np.interp(deltaT,simDailyDeltaT,newT2M)
 
-            # plt.figure()
-            # p1 = plt.subplot2grid((2,1),(0,0))
-            # # p1.plot(newDailyTime,np.hstack(simT2M))
-            # p1.plot(simDailyDeltaT,np.hstack(simT2M))
-            # p1.plot(simDailyDeltaT,T2Mmoving)
-            #
-            # p2 = plt.subplot2grid((2,1),(1,0))
-            # p2.plot(hourlyTime,interpT2M)
-
-            # interpSs = np.interp(deltaT,simDeltaT,np.hstack(simSs))
 
             simDataInterp = np.array([Hs,interpTp,interpDm,interpU10,interpV10,interpSSR,interpT2M,interpNTR])
 
-            # df = pandas.DataFrame(data=simDataInterp.T,index=hourlyTime,columns=["hs","tp","dm"])
             df = pandas.DataFrame(data=simDataInterp.T,index=hourlyTime,columns=["hs","tp","dm","u10","v10","ssr","t2m","ntr"])
-            # resampled = df.resample('H')
-            # interped = resampled.interpolate()
-            # simulationData = interped.values
-            # testTime = interped.index  # to_pydatetime()
-            # testTime2 = testTime.to_pydatetime()
-            # simsPickle = ('/Users/dylananderson/Documents/data/wainwright/futureSimulation{}.pickle'.format(simCounter))
+
             simsPickle = (directoryDict[site] + 'futureSimulation{}.pickle'.format(simCounter))
-            # simsPickle = ('/Users/dylananderson/Documents/data/pointLay/futureSimulation{}.pickle'.format(simNum))
-            # simsPickle = ('/Users/dylananderson/Documents/data/pointHope/futureSimulation{}.pickle'.format(simCounter))
-            # simsPickle = ('/volumes/macDrive/historicalSims2/simulation{}.pickle'.format(simNum))
 
             outputSims= {}
             outputSims['simulationData'] = simDataInterp.T
-            # outputSims['hourlyTime'] = hourlyTime
             outputSims['df'] = df
             outputSims['time'] = hourlyTime
-            # outputSims['simHs'] = np.hstack(simHs)
-            # outputSims['simTp'] = np.hstack(simTp)
-            # outputSims['simDm'] = np.hstack(simDm)
-            # outputSims['simU10'] = np.hstack(simU10)
-            # outputSims['simV10'] = np.hstack(simV10)
-            # outputSims['simSSR'] = np.hstack(simSSR)
-            # outputSims['simT2M'] = np.hstack(simT2M)
-            # outputSims['simNTR'] = np.hstack(simNTR)
 
-            # outputSims['simSs'] = np.hstack(simSs)
 
             with open(simsPickle, 'wb') as f:
                 pickle.dump(outputSims, f)
             simCounter = simCounter+1
 
 
-    #
-    # # ts = pandas.Series(np.hstack(simHs), index=newDailyTime)
-    # # resampled = ts.resample('H')
-    # # interp = resampled.interpolate()
-    #
-    # testTime = interped.index  # to_pydatetime()
-    # testTime2 = testTime.to_pydatetime()
-    # testData = interped.values
 
-
-
-# simsPickle = '/home/dylananderson/projects/atlanticClimate/Sims/allSimulations.pickle'
-# outputSims= {}
-# outputSims['simulationsHs'] = simulationsHs
-# outputSims['simulationsTime'] = simulationsTime
-# outputSims['simulationsTp'] = simulationsTp
-# outputSims['simulationsDm'] = simulationsDm
-# outputSims['simulationsSs'] = simulationsSs
-#
-# with open(simsPickle, 'wb') as f:
-#     pickle.dump(outputSims, f)
-#
-#
-# plt.figure()
-# ax1 = plt.subplot2grid((3,1),(0,0),rowspan=1,colspan=1)
-# hs = simDataInterp[0,:]
-# where0 = np.where((hs == 0))
-# hs[where0] = np.nan
-# ax1.plot(hourlyTime,hs)
-# ax2 = plt.subplot2grid((3,1),(1,0),rowspan=1,colspan=1)
-# tp = simDataInterp[1,:]
-# where0 = np.where((tp < 0.5))
-# tp[where0] = np.nan
-# ax2.plot(hourlyTime,tp)
-# ax3 = plt.subplot2grid((3,1),(2,0),rowspan=1,colspan=1)
-# dm = simDataInterp[7,:]
-# # where0 = np.where((dm == 0))
-# # dm[where0] = np.nan
-# # where360 = np.where((dm > 360))
-# # dm[where360] = dm[where360]-360
-# # whereNeg = np.where((dm < 0))
-# # dm[whereNeg] = dm[whereNeg]+360
-# ax3.plot(hourlyTime,dm)
-#
-# ### TODO: Need to assess the statistics of these hypothetical scenarios... Yearly max Hs? Wave Energy?
-#
-# ### TODO: Which requires interpolating the time series to hourly values...
-#
-# # for qq in len(simulationsTime):
-#
